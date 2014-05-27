@@ -17,11 +17,23 @@
 
 <project name="gridfs" default="all">
 
-    <import file="../connector-build.xml"/>
+    <property environment="env"/>
+    <condition property="mcf-dist" value="${env.MCFDISTPATH}">
+        <isset property="env.MCFDISTPATH"/>
+    </condition>
+    <property name="abs-dist" location="../../dist"/>
+    <condition property="mcf-dist" value="${abs-dist}">
+        <not>
+            <isset property="env.MCFDISTPATH"/>
+        </not>
+    </condition>
+
+    <import file="${mcf-dist}/connector-build.xml"/>
+
     <path id="connector-classpath">
         <path refid="mcf-connector-build.connector-classpath"/>
         <fileset dir="../../lib">
-        	<include name="mongo-*.jar"/>
+            <include name="mongo-java-driver*.jar"/>
         </fileset>
     </path>
 
@@ -29,8 +41,15 @@
         <mkdir dir="dist/lib"/>
         <copy todir="dist/lib">
             <fileset dir="../../lib">
-                <include name="mongo-*.jar"/>
+                <include name="mongo-java-driver*.jar"/>
             </fileset>
         </copy>
+    </target>
+
+    <target name="deliver-connector" depends="mcf-connector-build.deliver-connector">
+        <antcall target="general-add-repository-connector">
+            <param name="connector-label" value="GridFS"/>
+            <param name="connector-class" value="org.apache.manifoldcf.crawler.connectors.gridfs.GridFSRepositoryConnector"/>
+        </antcall>
     </target>
 </project>
