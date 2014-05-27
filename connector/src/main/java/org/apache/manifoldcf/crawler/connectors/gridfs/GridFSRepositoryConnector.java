@@ -531,7 +531,7 @@ public class GridFSRepositoryConnector extends BaseRepositoryConnector {
         int i = 0;
         while (i < versions.length) {
             String _id = documentIdentifiers[i];
-            GridFS gridfs = new GridFS(session);
+            GridFS gridfs = new GridFS(session, bucket);
             GridFSDBFile document = gridfs.findOne(new ObjectId(_id));
             if (document == null) {
                 versions[i] = null;
